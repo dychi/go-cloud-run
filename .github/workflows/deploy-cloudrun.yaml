@@ -1,0 +1,41 @@
+name: Build Docker Container and Deploy to Cloud Run
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+env:
+  GCP_PROJECT: ${{ secrets.GCP_PROJECT }}
+  IMAGE_PATH: asia.gcr.io/$GCP_PROJECT/go-hello-world
+
+jobs:
+  build_and_deploy:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout this repository
+      uses: actions/checkout@v2
+
+    - uses: google-github-actions/setup-gcloud@master
+      with:
+        project_id: ${{ env.GCP_PROJECT }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+
+    - name: Configure docker to use the gcloud cli
+      run: gcloud auth configure-docker --quiet
+
+    - name: Build a Docker Image
+      run: |
+        docker build -t ${{ env.IMAGE_PATH }}:${GITHUB_SHA::7} .
+
+    - name: Push the Image
+      run: docker push ${{ env.IMAGE_PATH }}:${GITHUB_SHA::7}
+
+    - name: Deploy Cloud Run
+      run: |
+        gcloud run deploy go-hello-world --image asia.gcr.io/${{ env.GCP_PROJECT }}/go-hello-world \
+          --allow-unauthenticate \
+          --platform managed \
+          --region asia-northeast1
