@@ -18,4 +18,5 @@ RUN set -x && apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -
 # Copy the binary to the production image from the builder stage.
 COPY --from=builder /app/server /app/server
 
+ENV NAME "NEW World"
 CMD ["/app/server"]

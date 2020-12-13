@@ -83,3 +83,10 @@ gcloud auth activate-service-account --key-file $PATH_TO_SA_KEY
 ```
 gcloud config set account $ACCOUNT_NAME
 ```
+
+# Cloud Endpoints
+Endpoints の構成をデプロイする
+```
+gcloud endpoints services deploy openapi-run.yaml \
+    --project $ESP_PROJECT_ID
+```
