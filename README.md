@@ -18,7 +18,8 @@ Cloud Runへのデプロイ
 gcloud run deploy go-hello-world --image asia.gcr.io/$GCP_PROJECT/go-hello-world \
     --platform managed \
     --region asia-northeast1 \
-    --allow-unauthenticated
+    --allow-unauthenticated \
+    --service-account github-actions-cloud-run-sa
 ```
 
 ## Service account
@@ -56,7 +57,12 @@ gcloud projects add-iam-policy-binding $PROJECT_ID \
     --role roles/storage.admin \
     --member serviceAccount:$SA_EMAIL
 ```
-
+```roles/iam.serviceAccountUser```ロールも追加
+```
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --role roles/iam.serviceAccountUser \
+    --member serviceAccount:$SA_EMAIL
+```
 サービスアカウントキーの作成
 ```
 gcloud iam service-accounts keys create credentials/github-actions-cloud-run.json \
@@ -66,4 +72,14 @@ gcloud iam service-accounts keys create credentials/github-actions-cloud-run.jso
 Githubのシークレットに登録するためにbase64エンコードを行う
 ```
 cat credentials/github-actions-cloud-run.json | base64
+```
+
+## ローカルでサービスアカウントとしてgcloudコマンドを実行する方法
+サービスアカウントキーでの認証
+```
+gcloud auth activate-service-account --key-file $PATH_TO_SA_KEY
+```
+アカウントの切り替え(ACCOUNT_NAMEはサービスアカウントもしくは個人IAMユーザーのメールアドレス)
+```
+gcloud config set account $ACCOUNT_NAME
 ```
