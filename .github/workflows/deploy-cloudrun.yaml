@@ -36,6 +36,6 @@ jobs:
     - name: Deploy Cloud Run
       run: |
         gcloud run deploy go-hello-world --image asia.gcr.io/${{ env.GCP_PROJECT }}/go-hello-world \
-          --allow-unauthenticate \
+          --allow-unauthenticated \
           --platform managed \
           --region asia-northeast1
