@@ -38,5 +38,4 @@ jobs:
         gcloud run deploy go-hello-world --image asia.gcr.io/${{ env.GCP_PROJECT }}/go-hello-world \
           --allow-unauthenticated \
           --platform managed \
-          --region asia-northeast1 \
-          --service-account github-actions-cloud-run-sa
+          --region asia-northeast1
