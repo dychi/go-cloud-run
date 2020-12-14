@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 )
 
 func main() {
@@ -21,7 +20,7 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	name := os.Getenv("NAME")
+	name := r.FormValue("name")
 	if name == "" {
 		name = "World"
 	}
